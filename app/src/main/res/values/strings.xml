@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Beacon</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="local_service_started">10</string>
+    <string name="local_service_label">10</string>
+</resources>

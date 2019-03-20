@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "48295631483",
+    "firebase_url": "https://biosignal-e309a.firebaseio.com",
+    "project_id": "biosignal-e309a",
+    "storage_bucket": "biosignal-e309a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48295631483:android:fb20d67b46fbe189",
+        "android_client_info": {
+          "package_name": "com.mistbeacon.beacon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48295631483-6edcdsn97mf2tkmbe4ho8tn4f7id7i2r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mistbeacon.beacon",
+            "certificate_hash": "472b3bd808f7fd8bcf9d845eb50b7a6d529ba363"
+          }
+        },
+        {
+          "client_id": "48295631483-0u50p4qb461kgdp4evmap6jc6oe2kjaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY3GWRCLDRxGMxF-gYDnvf0HcGYXsvQ8o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48295631483-0u50p4qb461kgdp4evmap6jc6oe2kjaa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
