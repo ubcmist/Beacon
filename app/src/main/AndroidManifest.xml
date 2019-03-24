@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".charts"
+            android:label="@string/title_activity_charts"></activity>
+
         <receiver android:name=".StressWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -58,7 +61,6 @@
                 <action android:name="android.intent.action.ACTION_SCREEN_OFF" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".StressedBroadcastReceiver"
             android:enabled="true"
@@ -67,7 +69,6 @@
                 <action android:name="com.mistbeacon.beacon.IMPULSE" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

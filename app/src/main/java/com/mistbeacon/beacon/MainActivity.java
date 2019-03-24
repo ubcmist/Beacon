@@ -78,26 +78,26 @@ public class MainActivity extends AppCompatActivity {
         this.txtLocation = (TextView) findViewById(R.id.txtLocation);
 
         // Create a new user with a first, middle, and last name
-        FirebaseApp.initializeApp(this);
-
-        FirebaseConnection fc = new FirebaseConnection();
-        fc.FirebaseConnection();
-
-        final TextView textView = (TextView) findViewById(R.id.txtLocation);
-        ms = new metricSet();
-        ms = fc.collection("HeartRate", 1, new FirebaseConnection.MyCallback() {
-            @Override
-            public metricSet onCallback(metricSet ms) {
-                TextView txtLocation =(TextView) findViewById(R.id.connection_status);
-                txtLocation.setText(Integer.toString(ms.getValue()));
-                return ms;
-            }
-        });
+//        FirebaseApp.initializeApp(this);
+//
+//        FirebaseConnection fc = new FirebaseConnection();
+//        fc.FirebaseConnection();
+//
+//        final TextView textView = (TextView) findViewById(R.id.txtLocation);
+//        ms = new metricSet();
+//        ms = fc.collection("HeartRate", 1, new FirebaseConnection.MyCallback() {
+//            @Override
+//            public metricSet onCallback(metricSet ms) {
+//                TextView txtLocation =(TextView) findViewById(R.id.connection_status);
+//                txtLocation.setText(Integer.toString(ms.getValue()));
+//                return ms;
+//            }
+//        });
 
         //Log.d("DTF", Integer.toString(ms.getValue()));
 
         //start the service for background tasks
-        startService(new Intent(this, geoservice.class));
+        //startService(new Intent(this, geoservice.class));
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
