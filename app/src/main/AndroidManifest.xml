@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mistbeacon.beacon">
 
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-        <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
-        <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
 
     <application
         android:allowBackup="true"
@@ -16,6 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver android:name=".StressWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.mistbeacon.beacon.WIDGET_BUTTON1" />
+                <action android:name="com.mistbeacon.beacon.WIDGET_BUTTON2" />
+                <action android:name="com.mistbeacon.beacon.WIDGET_BUTTON3" />
+                <action android:name="com.mistbeacon.beacon.WIDGET_BUTTON4" />
+                <action android:name="com.mistbeacon.beacon.WIDGET_BUTTON5" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stress_widget_info" />
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -35,10 +50,21 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".ScreenTimeBroadcastReceiver" android:enabled="true">
+        <receiver
+            android:name=".ScreenTimeBroadcastReceiver"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_SCREEN_ON"></action>
-                <action android:name="android.intent.action.ACTION_SCREEN_OFF"></action>
+                <action android:name="android.intent.action.ACTION_SCREEN_ON" />
+                <action android:name="android.intent.action.ACTION_SCREEN_OFF" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".StressedBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.mistbeacon.beacon.IMPULSE" />
             </intent-filter>
         </receiver>
 

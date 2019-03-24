@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00ffffff"
+    android:padding="@dimen/widget_margin">
+
+    <Button
+        android:id="@+id/stressed1"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:text="1"/>
+    <Button
+        android:id="@+id/stressed2"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:text="2"
+/>
+    <Button
+        android:id="@+id/stressed3"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:text="3"
+/>
+    <Button
+        android:id="@+id/stressed4"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:text="4"
+/>
+    <Button
+        android:id="@+id/stressed5"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:text="5"
+/>
+
+</LinearLayout>

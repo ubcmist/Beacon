@@ -1,6 +1,7 @@
 package com.mistbeacon.beacon;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -17,16 +18,26 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private double wayLatitude = 0.0, wayLongitude = 0.0;
     private FusedLocationProviderClient fusedLocationClient;
     private TextView txtLocation;
+    private metricSet ms;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -65,33 +77,26 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         this.txtLocation = (TextView) findViewById(R.id.txtLocation);
 
+        // Create a new user with a first, middle, and last name
         FirebaseApp.initializeApp(this);
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d("DTA", "Value is: " + value);
-            }
+        FirebaseConnection fc = new FirebaseConnection();
+        fc.FirebaseConnection();
 
+        final TextView textView = (TextView) findViewById(R.id.txtLocation);
+        ms = new metricSet();
+        ms = fc.collection("HeartRate", 1, new FirebaseConnection.MyCallback() {
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("DTA", "Failed to read value.", error.toException());
+            public metricSet onCallback(metricSet ms) {
+                TextView txtLocation =(TextView) findViewById(R.id.connection_status);
+                txtLocation.setText(Integer.toString(ms.getValue()));
+                return ms;
             }
         });
 
-//        Intent servIntent = new Intent("com.mistbeacon.beacon.LONGRUNSERVICE");
-//        startService(servIntent);
-//        Intent startIntent = new Intent(getApplicationContext(), geoservice.class);
-//        startIntent.setAction(ACTION_START_SERVICE);
-//        startService(startIntent);
+        //Log.d("DTF", Integer.toString(ms.getValue()));
 
+        //start the service for background tasks
         startService(new Intent(this, geoservice.class));
 
         mTextMessage = (TextView) findViewById(R.id.message);

@@ -21,7 +21,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.firebase:firebase-database:16.0.1'
+    //implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.1.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -30,6 +31,9 @@ dependencies {
     implementation 'com.android.support:support-vector-drawable:28.+'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.akexorcist:bluetoothspp:1.0.0'
+    implementation 'com.google.firebase:firebase-functions:16.3.0'
     testImplementation 'junit:junit:4.12'
 }
 

@@ -1,16 +1,19 @@
 package com.mistbeacon.beacon;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -25,11 +28,21 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 
 import static android.content.Intent.ACTION_MAIN;
 
@@ -47,17 +60,109 @@ public class geoservice extends Service {
     protected double longitude;
     LocationManager locationManager;
     Context mContext;
+    BluetoothSPP bluetooth;
+    SharedPreferences prefs;
+
 
     @RequiresApi(api = 26)
     @Override
     public void onCreate() {
         super.onCreate();
 
-        location = new Wherebouts();
+        this.prefs = this.getSharedPreferences("com.mistbeacon.beacon", Context.MODE_PRIVATE);
+
+        /////////////////////////////////////////////////////////////////////////
+        /////////////////////////////BLE Initialization//////////////////////////
+        /////////////////////////////////////////////////////////////////////////
+        bluetooth = new BluetoothSPP(this);
+
+        if (!bluetooth.isBluetoothAvailable()) {
+            Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_SHORT).show();
+            //finish();
+        }
+
+        bluetooth.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
+            public void onDeviceConnected(String name, String address) {
+//                connection_status.setText("Connected to " + name);
+//                connection_status.setTextColor(Color.GREEN);
+                Toast.makeText(getApplicationContext(), "Connected to " + name, Toast.LENGTH_SHORT).show();
+            }
+
+            public void onDeviceDisconnected() {
+//                connection_status.setText("Connection lost");
+//                connection_status.setTextColor(Color.RED);
+                Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+            }
+
+
+            public void onDeviceConnectionFailed() {
+//                connection_status.setText("Unable to connect");
+//                connection_status.setTextColor(Color.YELLOW);
+                Toast.makeText(getApplicationContext(), "Unable to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        bluetooth.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                //connection_status.setText("Received: " + message);
+                String str[] = message.split(",");
+                Log.d("DTF", str[0]);
+
+                if(str[0].equals("HeartRate") || str[0].equals("GSR")){
+                    FirebaseConnection fc = new FirebaseConnection();
+                    fc.FirebaseConnection();
+
+
+                    List<metricSet> list = new ArrayList<metricSet>();
+                    int i = 0;
+                    int interval = Integer.parseInt(str[1]);
+
+                    Date currentDate = new Date();
+                    long time = currentDate.getTime() / 1000;
+
+                    for(String num : Arrays.copyOfRange(str,2,str.length)){
+                        metricSet ms = new metricSet(Integer.parseInt(num), time - interval*i, prefs.getInt("stressed" + str[0], 0));
+                        list.add(ms);
+                        i++;
+                    }
+
+                    fc.addToMetrics(list,str[0]);
+                    prefs.edit().putInt("stressed" + str[0], 0).apply();
+                }
+            }
+        });
+        /////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////
+//        RemoteViews remoteViews = new RemoteViews(this
+//                .getApplicationContext().getPackageName(),
+//                R.layout.stress_widget);
+//
+//        Intent clickIntent = new Intent(this.getApplicationContext(),
+//                StressWidget.class);
+//
+//        clickIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                getApplicationContext(), 0, clickIntent,
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+        /////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////
+
+        FirebaseApp.initializeApp(this);
+
+        FirebaseConnection fc = new FirebaseConnection();
+        fc.FirebaseConnection();
+
+        metricSet ms = new metricSet();
+        //ms = fc.collection("HeartRate",1);
+        //Log.d("DTAA", Integer.toString(ms.getValue()));
+
+        location = new Wherebouts(this);
 
         // the following monitors the GPS activitry of the use; it only triggers if the user moves more than 100 meters.
         LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, location);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500000, 0, location);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startMyOwnForeground();
@@ -70,13 +175,25 @@ public class geoservice extends Service {
         lockFilter.addAction(Intent.ACTION_SCREEN_OFF);
         getApplicationContext().registerReceiver(stb, lockFilter);
 
+        final StressedBroadcastReceiver stress = new StressedBroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                super.onReceive(context, intent);
+                Log.d("DTA2", "true");
+            }
+        };
+        final SharedPreferences prefs = this.getSharedPreferences(
+                "com.mistbeacon.beacon", Context.MODE_PRIVATE);
+
+
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 try{
-                    Log.d("ISR", stb.getTimeOn() + "the interrupt is working!" + location.getDailyMovement().toString());
+                    //Log.d("ISR", stb.getTimeOn() + "the interrupt is working!" + ms.getValue());
+                    Log.d("DTA2", Integer.toString(prefs.getInt("stressedLocation", 0)));
                 }
                 catch (Exception e) {
                     // TODO: handle exception
@@ -102,6 +219,16 @@ public class geoservice extends Service {
                 startForeground(1, new Notification());
         }
         else stopMyService();
+
+        if (!bluetooth.isBluetoothEnabled()) {
+            bluetooth.enable();
+        } else {
+            if (!bluetooth.isServiceAvailable()) {
+                bluetooth.setupService();
+                bluetooth.startService(BluetoothState.DEVICE_OTHER);
+            }
+        }
+
         return START_STICKY;
     }
 
@@ -139,11 +266,27 @@ public class geoservice extends Service {
         startForeground(2, notification);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK)
+                bluetooth.connect(data);
+        } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+            if (resultCode == Activity.RESULT_OK) {
+                bluetooth.setupService();
+            } else {
+                Toast.makeText(getApplicationContext()
+                        , "Bluetooth was not enabled."
+                        , Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     //protected Location
 
     void stopMyService() {
         stopForeground(true);
         stopSelf();
+        bluetooth.stopService();
         isServiceRunning = false;
     }
 }
