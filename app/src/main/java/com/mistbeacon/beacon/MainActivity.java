@@ -1,45 +1,42 @@
 package com.mistbeacon.beacon;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
+import it.sephiroth.android.library.bottomnavigation.MenuParser;
+
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
+                                                                home.OnFragmentInteractionListener,
+                                                                charts.OnFragmentInteractionListener,
+                                                                exercises.OnFragmentInteractionListener,
+                                                                barChart.OnFragmentInteractionListener,
+                                                                line_chart.OnFragmentInteractionListener,
+                                                                bottomChart.OnFragmentInteractionListener{
 
     private TextView mTextMessage;
     private int locationRequestCode = 1000;
@@ -48,34 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtLocation;
     private metricSet ms;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        //tx.replace(R.id.home, new home());
+        //tx.commit();
+
+        //loading the default fragment
+        loadFragment(new home());
+
+        //getting bottom navigation view and attaching the listener
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(this);
+
+        //bottomNavigation.setOnNavigationItemSelectedListener(gf);
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        this.txtLocation = (TextView) findViewById(R.id.txtLocation);
 
         // Create a new user with a first, middle, and last name
 //        FirebaseApp.initializeApp(this);
@@ -100,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
         //startService(new Intent(this, geoservice.class));
 
         mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -117,11 +103,27 @@ public class MainActivity extends AppCompatActivity {
                     if (location != null) {
                         wayLatitude = location.getLatitude();
                         wayLongitude = location.getLongitude();
-                        txtLocation.setText(String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude));
                     }
                 }
             });
         }
+    }
+
+    public void switchToFragment1() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.home, new home()).commit();
+    }
+
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -153,4 +155,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment_chart = manager.findFragmentByTag("Frag_Chart_tag");
+        Fragment fragment_bottom = manager.findFragmentByTag("Frag_Bottom_tag");
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        switch (item.getItemId()) {
+            case R.id.home:
+                fragment = new home();
+                if(fragment_chart != null) transaction.remove(manager.findFragmentByTag("Frag_Chart_tag"));
+                if(fragment_bottom != null) transaction.remove(manager.findFragmentByTag("Frag_Bottom_tag"));
+                break;
+
+            case R.id.charts:
+                fragment = new charts();
+                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Chart_tag");
+                transaction.replace(R.id.frameForBottom, new bottomChart(), "Frag_Bottom_tag");
+                break;
+
+            case R.id.exercises:
+                fragment = new barChart();
+                if(fragment_chart != null) transaction.remove(manager.findFragmentByTag("Frag_Chart_tag"));
+                if(fragment_bottom != null) transaction.remove(manager.findFragmentByTag("Frag_Bottom_tag"));
+                break;
+        }
+
+
+        transaction.replace(R.id.frame, fragment, "Frag_Top_tag");
+        transaction.commit();
+
+        return true;//loadFragment(fragment);
+    }
+
+    //home fragment
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

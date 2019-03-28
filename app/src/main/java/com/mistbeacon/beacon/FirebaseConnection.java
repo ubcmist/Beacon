@@ -1,7 +1,6 @@
 package com.mistbeacon.beacon;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -33,6 +32,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.Inflater;
+
+import androidx.annotation.NonNull;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 

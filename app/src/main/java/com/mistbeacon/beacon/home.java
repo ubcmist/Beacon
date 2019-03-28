@@ -3,47 +3,22 @@ package com.mistbeacon.beacon;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
-import lecho.lib.hellocharts.animation.ChartAnimationListener;
-import lecho.lib.hellocharts.gesture.ZoomType;
-import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.model.ValueShape;
-import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.LineChartView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link charts.OnFragmentInteractionListener} interface
+ * {@link home.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link charts#newInstance} factory method to
+ * Use the {@link home#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class charts extends Fragment {
+public class home extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -54,9 +29,8 @@ public class charts extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private View rootView;
 
-    public charts() {
+    public home() {
         // Required empty public constructor
     }
 
@@ -66,11 +40,11 @@ public class charts extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment charts.
+     * @return A new instance of fragment home.
      */
     // TODO: Rename and change types and number of parameters
-    public static charts newInstance(String param1, String param2) {
-        charts fragment = new charts();
+    public static home newInstance(String param1, String param2) {
+        home fragment = new home();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -91,48 +65,7 @@ public class charts extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_charts, container, false);
-
-        setupTabLayout();
-
-        return rootView;
-    }
-
-    private void setupTabLayout() {
-        TabLayout mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                onTabTapped(tab.getPosition());
-            }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                onTabTapped(tab.getPosition());
-            }
-        });
-    }
-
-    private void onTabTapped(int position) {
-        FragmentManager manager = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        switch (position) {
-            case 0:
-                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Bottom_tag");
-                transaction.commit();
-                break;
-            case 1:
-                transaction.replace(R.id.frameForChart, new barChart(), "Frag_Bottom_tag");
-                transaction.commit();
-                break;
-            case 2:
-                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Bottom_tag");
-                transaction.commit();
-                break;
-        }
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
