@@ -27,7 +27,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
 
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                                                 exercises.OnFragmentInteractionListener,
                                                                 barChart.OnFragmentInteractionListener,
                                                                 line_chart.OnFragmentInteractionListener,
-                                                                bottomChart.OnFragmentInteractionListener{
+                                                                bottomChart.OnFragmentInteractionListener,
+                                                                pieChart.OnFragmentInteractionListener{
 
     private TextView mTextMessage;
     private int locationRequestCode = 1000;
@@ -66,19 +69,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Create a new user with a first, middle, and last name
-//        FirebaseApp.initializeApp(this);
-//
+        FirebaseApp.initializeApp(this);
+
 //        FirebaseConnection fc = new FirebaseConnection();
 //        fc.FirebaseConnection();
 //
-//        final TextView textView = (TextView) findViewById(R.id.txtLocation);
+//        //final TextView textView = (TextView) findViewById(R.id.txtLocation);
 //        ms = new metricSet();
 //        ms = fc.collection("HeartRate", 1, new FirebaseConnection.MyCallback() {
 //            @Override
-//            public metricSet onCallback(metricSet ms) {
-//                TextView txtLocation =(TextView) findViewById(R.id.connection_status);
-//                txtLocation.setText(Integer.toString(ms.getValue()));
-//                return ms;
+//            public metricSet onCallback(List<metricSet> ms) {
+//                TextView txtLocation =(TextView) findViewById(R.id.homee);
+//                txtLocation.setText(Integer.toString(ms.get(0).getValue()));
+//                return null;
 //            }
 //        });
 
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.charts:
                 fragment = new charts();
                 transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Chart_tag");
-                transaction.replace(R.id.frameForBottom, new bottomChart(), "Frag_Bottom_tag");
+                transaction.replace(R.id.frameForBottom, new pieChart(), "Frag_Bottom_tag");
                 break;
 
             case R.id.exercises:

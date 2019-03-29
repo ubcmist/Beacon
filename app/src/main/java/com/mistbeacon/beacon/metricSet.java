@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class metricSet {
-    protected int value;
-    protected long createdAt;
-    protected int stressed;
+    public int value;
+    public long createdAt;
+    public int stressed;
     //protected Map<String, Object> pack = new HashMap<String, Object>();
 
     //constructors

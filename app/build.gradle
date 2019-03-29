@@ -10,6 +10,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        // Enable multiDex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -42,6 +44,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation files('libs/hellocharts-library-1.5.8.jar')
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.android.support:multidex:1.0.0'
 }
 
 

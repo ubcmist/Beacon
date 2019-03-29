@@ -11,7 +11,9 @@
     <color name="testcolorblue">#152b38</color>
     <color name="pink">#fe104d</color>
     <color name="lightmain">#00A2CE</color>
-    <color name="lightmainop">#8800A2CE</color>
+    <color name="lightmainop">#7c98ab</color>
     <color name="middlemain">#1F6D99</color>
     <color name="darkmain">#223368</color>
+    <color name="darkmainop">#FF223368</color>
+    <color name="midgrey">#81838A</color>
 </resources>

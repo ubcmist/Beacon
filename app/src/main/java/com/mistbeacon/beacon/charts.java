@@ -2,8 +2,10 @@ package com.mistbeacon.beacon;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,11 +29,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -55,6 +62,7 @@ public class charts extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private View rootView;
+    protected FirebaseConnection fc;
 
     public charts() {
         // Required empty public constructor
@@ -78,6 +86,7 @@ public class charts extends Fragment {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +94,70 @@ public class charts extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        Calendar c = Calendar.getInstance();
+        long now = c.getTimeInMillis();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long passed = now - c.getTimeInMillis();
+        long secondsPassed = passed / 1000;
+
+        Date currentDate = new Date();
+        long time = currentDate.getTime() / 1000;
+        long start = time - secondsPassed;
+
+        fc = new FirebaseConnection();
+        fc.FirebaseConnection();
+
+        fc.collection("Usage", start, new FirebaseConnection.MyCallback(){
+
+            @Override
+            public metricSet onCallback(List<metricSet> ms) {
+                long total = 0;
+                for(metricSet hr : ms){
+                    total += hr.getValue();
+                }
+                TextView screen =(TextView) rootView.findViewById(R.id.screen);
+                screen.setText(Long.toString(total/60000) + " min.");
+                return null;
+            }
+        });
+
+        fc.collection("Travelled", start, new FirebaseConnection.MyCallback(){
+
+            @Override
+            public metricSet onCallback(List<metricSet> ms) {
+                long total = 0;
+                for(metricSet hr : ms){
+                    total += hr.getValue();
+                }
+                TextView distance =(TextView) rootView.findViewById(R.id.distance);
+                distance.setText(Float.toString(round((float)total/1000, 1)) + " km");
+                return null;
+            }
+        });
+
+        fc.collection("HeartRate", 1, new FirebaseConnection.MyCallback(){
+
+            @Override
+            public metricSet onCallback(List<metricSet> ms) {
+                long total = 0;
+                for(metricSet hr : ms){
+                    total = hr.getValue();
+                }
+                TextView HeartRate =(TextView) rootView.findViewById(R.id.HeartRate);
+                HeartRate.setText(Long.toString(total) + " bpm");
+                return null;
+            }
+        });
+    }
+
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
     }
 
     @Override
@@ -121,15 +194,15 @@ public class charts extends Fragment {
         FragmentTransaction transaction = manager.beginTransaction();
         switch (position) {
             case 0:
-                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Bottom_tag");
+                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Chart_tag");
                 transaction.commit();
                 break;
             case 1:
-                transaction.replace(R.id.frameForChart, new barChart(), "Frag_Bottom_tag");
+                transaction.replace(R.id.frameForChart, new barChart(), "Frag_Chart_tag");
                 transaction.commit();
                 break;
             case 2:
-                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Bottom_tag");
+                transaction.replace(R.id.frameForChart, new line_chart(), "Frag_Chart_tag");
                 transaction.commit();
                 break;
         }

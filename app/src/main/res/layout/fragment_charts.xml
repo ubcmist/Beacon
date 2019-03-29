@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:scrollbars="vertical"
-        android:background="@color/lightgray">
+        android:background="#00ffffff">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,24 +19,43 @@
             android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.15"
+                android:padding="10dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/beacon_icon"/>
 
             <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
             android:textSize="@dimen/name"
             android:text="Antoine"
+            android:layout_weight="0.7"
             android:textColor="#000000" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.15"
+                android:padding="10dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/settings"/>
 
         </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="5dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="0dp"
                 android:textSize="@dimen/metric_band_title"
                 android:text="Sunday, April 14"
                 android:textColor="#000000" />
@@ -55,7 +74,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:textSize="@dimen/metric_band_title"
-            android:text="Quick Metrics"
+            android:text="Daily Metrics"
             android:textColor="#000000" />
 
         <LinearLayout
@@ -70,15 +89,29 @@
                     android:layout_weight="1" >
                 </Space>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stress"
                     android:gravity="center"
-                    android:padding="5dp"
+                    android:padding="0dp"
                     android:textSize="@dimen/metric_band"
                     android:textStyle="bold"
-                    android:text="5 BPM"
-                    android:textColor="#000000" />
+                    android:text="-"
+                    android:textColor="#CC000000" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:textSize="@dimen/metric_band_sml"
+                    android:text="Stress"
+                    android:textColor="#88000000" />
+            </LinearLayout>
 
                 <Space
                     android:layout_width="0dp"
@@ -86,15 +119,29 @@
                     android:layout_weight="1" >
                 </Space>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/screen"
                     android:gravity="center"
-                    android:padding="5dp"
+                    android:padding="0dp"
                     android:textSize="@dimen/metric_band"
                     android:textStyle="bold"
-                    android:text="5 BPM"
-                    android:textColor="#000000" />
+                    android:text="0 min."
+                    android:textColor="#CC000000" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:textSize="@dimen/metric_band_sml"
+                    android:text="Screen Time"
+                    android:textColor="#88000000" />
+            </LinearLayout>
 
                 <Space
                     android:layout_width="0dp"
@@ -102,15 +149,29 @@
                     android:layout_weight="1" >
                 </Space>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/distance"
                     android:gravity="center"
-                    android:padding="5dp"
+                    android:padding="0dp"
                     android:textSize="@dimen/metric_band"
                     android:textStyle="bold"
-                    android:text="5 BPM"
-                    android:textColor="#000000" />
+                    android:text="0.0 km"
+                    android:textColor="#CC000000" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:textSize="@dimen/metric_band_sml"
+                    android:text="Distance"
+                    android:textColor="#88000000" />
+            </LinearLayout>
 
                 <Space
                     android:layout_width="0dp"
@@ -125,12 +186,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/HeartRate"
                         android:gravity="center"
                         android:padding="0dp"
                         android:textSize="@dimen/metric_band"
                         android:textStyle="bold"
-                        android:text="5 BPM"
-                        android:textColor="#000000" />
+                        android:text="0 bpm"
+                        android:textColor="#CC000000" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -153,7 +215,8 @@
             android:id="@+id/coordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:background="#ffffff">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"

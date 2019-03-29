@@ -11,16 +11,39 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:weightSum="1.0">
+        android:weightSum="1.0"
+        android:background="#00ffffff">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="175dp"
             android:layout_margin="5dp"
             android:clickable="false"
-            app:cardBackgroundColor="@color/lightmainop"
-            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/darkmainop"
             android:layout_weight=".5">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="0dp"
+                android:textSize="@dimen/metric_band"
+                android:textStyle="bold"
+                android:text="5 BPM"
+                android:textColor="#ffffff" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="0dp"
+                android:textSize="@dimen/metric_band_sml"
+                android:text="Heart Rate"
+                android:textColor="#7c98ab" />
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -29,9 +52,14 @@
             android:layout_height="175dp"
             android:layout_margin="5dp"
             android:clickable="false"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/lightmainop"
+            app:cardBackgroundColor="@color/darkmainop"
             android:layout_weight=".5">
+
+            <lecho.lib.hellocharts.view.PieChartView
+                android:id="@+id/pie1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </lecho.lib.hellocharts.view.PieChartView>
 
         </androidx.cardview.widget.CardView>
 

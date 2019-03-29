@@ -55,6 +55,7 @@ class Wherebouts implements android.location.LocationListener{
         long time = currentDate.getTime() / 1000;
 
         metricSet ms = new metricSet(0, time, prefs.getInt("stressedLocation", 0));
+        metricSet msTravelled = new metricSet(0, time, prefs.getInt("stressedLocation", 0));
         //fc.addToMetrics(ms,"Location");
 
         if(dist > 0.1 && dist < 5){
@@ -66,7 +67,10 @@ class Wherebouts implements android.location.LocationListener{
             travelled += dist;
         }
 
+        msTravelled.addValue((int) travelled*1000);
+        travelled = 0;
         fc.addToMetrics(ms,"Location");
+        fc.addToMetrics(msTravelled, "Travelled");
         prefs.edit().putInt("stressedLocation", 0).apply();
     }
 

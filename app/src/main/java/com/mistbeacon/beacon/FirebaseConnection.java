@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -65,13 +66,14 @@ public class FirebaseConnection {
     }
 
     public interface MyCallback {
-        metricSet onCallback(metricSet ms);
+        metricSet onCallback(List<metricSet> ms);
     }
 
     public metricSet collection(final String collection, int numberLastRecs, final MyCallback myCallback){
-            db.collection(collection)
+            db.collection(collection).orderBy("createdAt", Query.Direction.DESCENDING).limit(numberLastRecs)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        List<metricSet> ms = new ArrayList<>();
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
@@ -79,7 +81,7 @@ public class FirebaseConnection {
                                         //TextView tv = tvi;
                                         //tvi.setText('d');
                                         Log.d("DTA", Integer.toString(document.toObject(metricSet.class).getValue()));
-                                        ms = document.toObject(metricSet.class);
+                                        ms.add(document.toObject(metricSet.class));
                                 }
                             } else {
                                 Log.w("DTA", "Error getting documents.", task.getException());
@@ -87,6 +89,31 @@ public class FirebaseConnection {
                             myCallback.onCallback(ms);
                         }
                     });
+
+        //Log.d("DTA", Integer.toString(ms.getValue()));
+        return this.ms;
+    }
+
+    public metricSet collection(final String collection, long fromTime, final MyCallback myCallback){
+        db.collection(collection).whereGreaterThan("createdAt", fromTime)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    List<metricSet> ms = new ArrayList<>();
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //TextView tv = tvi;
+                                //tvi.setText('d');
+                                Log.d("DTA", Integer.toString(document.toObject(metricSet.class).getValue()));
+                                ms.add(document.toObject(metricSet.class));
+                            }
+                        } else {
+                            Log.w("DTA", "Error getting documents.", task.getException());
+                        }
+                        myCallback.onCallback(ms);
+                    }
+                });
 
         //Log.d("DTA", Integer.toString(ms.getValue()));
         return this.ms;
