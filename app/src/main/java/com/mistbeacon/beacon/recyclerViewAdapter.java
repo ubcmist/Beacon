@@ -26,7 +26,13 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<androidx.recyclerv
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private Context mContext;
 
-    public recyclerViewAdapter(ExerciseGalley captions, ArrayList<String> imageUrls, ArrayList<String> context) {
+//    public recyclerViewAdapter(ExerciseGallery captions, ArrayList<String> imageUrls, ArrayList<String> context) {
+//        mCaptions = captions;
+//        mImageUrls = imageUrls;
+//        mContext = context;
+//    }
+
+    public recyclerViewAdapter(Context context, ArrayList<String> captions, ArrayList<String> imageUrls) {
         mCaptions = captions;
         mImageUrls = imageUrls;
         mContext = context;

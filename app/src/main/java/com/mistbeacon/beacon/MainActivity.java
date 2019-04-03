@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                                                 home.OnFragmentInteractionListener,
                                                                 charts.OnFragmentInteractionListener,
                                                                 exercises.OnFragmentInteractionListener,
+                                                                ExerciseGallery.OnFragmentInteractionListener,
                                                                 barChart.OnFragmentInteractionListener,
                                                                 line_chart.OnFragmentInteractionListener,
                                                                 bottomChart.OnFragmentInteractionListener,
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
 
             case R.id.exercises:
-                fragment = new barChart();
+                fragment = new ExerciseGallery();
                 if(fragment_chart != null) transaction.remove(manager.findFragmentByTag("Frag_Chart_tag"));
                 if(fragment_bottom != null) transaction.remove(manager.findFragmentByTag("Frag_Bottom_tag"));
                 break;
