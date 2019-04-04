@@ -32,7 +32,7 @@ public class ExerciseGallery extends Fragment {
     //variables
     private ArrayList<String> mCaptions = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
-    private Context mContext = getActivity();
+    private Context mContext;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,21 +48,21 @@ public class ExerciseGallery extends Fragment {
         //Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ExerciseGallery.
-     */
+//    /**
+//     * Use this factory method to create a new instance of
+//     * this fragment using the provided parameters.
+//     *
+//     * @param param1 Parameter 1.
+//     * @param param2 Parameter 2.
+//     * @return A new instance of fragment ExerciseGallery.
+//     */
     // TODO: Rename and change types and number of parameters
-    public static ExerciseGallery newInstance(String param1, String param2) {
+    public static ExerciseGallery newInstance() {
         ExerciseGallery fragment = new ExerciseGallery();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -125,7 +125,6 @@ public class ExerciseGallery extends Fragment {
         mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
         mCaptions.add("Rocky Mountain National Park");
 
-
         mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
         mCaptions.add("Mahahual");
 
@@ -151,7 +150,7 @@ public class ExerciseGallery extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager( (Context) mListener, LinearLayoutManager.HORIZONTAL, false);
         androidx.recyclerview.widget.RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter adapter = new recyclerViewAdapter(mContext, mCaptions, mImageUrls);
+        recyclerViewAdapter adapter = new recyclerViewAdapter(getActivity(), mCaptions, mImageUrls);
         recyclerView.setAdapter(adapter);
     }
 
